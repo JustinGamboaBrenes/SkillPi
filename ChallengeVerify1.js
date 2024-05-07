@@ -1,22 +1,13 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const { promisify } = require('util');
-const readFileAsync = promisify(fs.readFile);
+const filePath = '/home/candidate/javascript_advanced.html';
 
-async function verificarReto1(filePath) {
-  try {
-    const codigo = await readFileAsync(filePath, 'utf8');
-    const reto1 = /function hacerSolicitudHTTP\(\) {[\s\S]*return new Promise/.test(codigo);
-    console.log(`Reto 1 cumplido: ${reto1}`);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-// Permitir ejecución directa o uso como módulo
-if (require.main === module) {
-  verificarReto1('/home/candidate/javascript_advanced.html');
-}
-
-module.exports = verificarReto1;
-
+fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error:', err);
+        process.exit(1);
+    }
+    const reto1 = /function hacerSolicitudHTTP\(\) {[\s\S]*return new Promise/.test(data);
+    console.log(`Reto 1 cumplido: ${reto1 ? 'success' : 'failure'}`);
+    process.exit(reto1 ? 0 : 1);
+});
