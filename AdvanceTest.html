@@ -135,14 +135,17 @@
         }
 
         function verifyChallenge(challengeNumber) {
-            var buttonId = "challenge" + challengeNumber + "Button";
-            var button = document.getElementById(buttonId);
+            var button = document.getElementById('challenge' + challengeNumber + 'Button');
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     button.innerText = xhr.status === 200 ? "Success" : "Failure";
                     button.classList.remove("success", "failure");
                     button.classList.add(xhr.status === 200 ? "success" : "failure");
+                    setTimeout(function() {
+                        button.innerText = "Verify Challenge " + challengeNumber;
+                        button.classList.remove("success", "failure");
+                    }, 3000); // Reset the button after 3 seconds
                 }
             };
             xhr.open("GET", `http://localhost:3000/verify-challenge-${challengeNumber}`, true);
@@ -153,4 +156,3 @@
     </script>
 </body>
 </html>
-
