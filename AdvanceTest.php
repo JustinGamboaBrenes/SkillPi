@@ -18,7 +18,7 @@
             height: 100%;
         }
 
-        #shell-container {
+      <!--  #shell-container {
             width: 72%;
             height: 100%;
             border-right: 1px solid #ccc;
@@ -30,7 +30,22 @@
             overflow-y: scroll;
             padding: 20px;
             position: relative;
+        } -->
+        
+        #shell-container {
+            width: 50%; /* Adjusted from 72% to fit within the viewport */
+            height: 100%;
+            border-right: 1px solid #ccc;
         }
+
+         #exercises-container {
+            width: 50%; /* Adjusted width */
+            height: 100%;
+            overflow-y: scroll;
+            padding: 20px;
+            position: relative;
+}
+
 
         #timer {
             position: absolute;
@@ -82,7 +97,7 @@
     <div class="container">
         <!-- Shell in a Box -->
         <div id="shell-container">
-            <iframe src="http://131.186.0.96:4602"></iframe>
+            <iframe src="http://localhost:4602/"></iframe>
             <!-- Replace "http://localhost:4200" with the URL of your Shell in a Box server -->
         </div>
 
