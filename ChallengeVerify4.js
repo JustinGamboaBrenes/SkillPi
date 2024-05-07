@@ -1,20 +1,13 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const { promisify } = require('util');
-const readFileAsync = promisify(fs.readFile);
+const filePath = '/home/candidate/javascript_advanced.html';
 
-async function verificarReto4(filePath) {
-  try {
-    const codigo = await readFileAsync(filePath, 'utf8');
-    const reto4 = /\.then\([\s\S]*\.catch\(/.test(codigo);
-    console.log(`Reto 4 cumplido: ${reto4}`);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-if (require.main === module) {
-  verificarReto4('path/to/your/file.html');
-}
-
-module.exports = verificarReto4;
+fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error:', err);
+        process.exit(1);
+    }
+    const reto4 = /\.then\([\s\S]*\.catch\(/.test(data);
+    console.log(`Reto 4 cumplido: ${reto4 ? 'success' : 'failure'}`);
+    process.exit(reto4 ? 0 : 1);
+});
