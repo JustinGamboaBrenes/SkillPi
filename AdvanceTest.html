@@ -48,23 +48,6 @@
             border: none;
         }
 
-        .green, .yellow, .red {
-            background-color: #4CAF50; /* Green */
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .yellow {
-            background-color: #ffeb3b; /* Yellow */
-        }
-
-        .red {
-            background-color: #f44336; /* Red */
-        }
-
         .challenge-button {
             margin-top: 10px;
             padding: 10px 20px;
@@ -72,46 +55,47 @@
             cursor: pointer;
         }
 
-        .success, .failure {
+        .success {
+            background-color: green;
             color: white;
         }
 
-        .success {
-            background-color: #4CAF50; /* Green */
-        }
-
         .failure {
-            background-color: #f44336; /* Red */
+            background-color: red;
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Shell in a Box -->
         <div id="shell-container">
             <iframe src="http://localhost:4602/"></iframe>
         </div>
+
+        <!-- Exercises -->
         <div id="exercises-container">
             <h1>Linux Exercises</h1>
             <div id="timer">30:00</div>
             <ul>
-                <li>
-                    <strong>Challenge 1:</strong>
-                    Define a function named "HTTPrequest".
+                <li><strong>Challenge 1:</strong><br>
+                    Define a function named "<strong>HTTPrequest</strong>".<br>
+                    Create a function called HTTPrequest in ./javascript_advanced.html.
                     <button id="challenge1Button" class="challenge-button" onclick="verifyChallenge(1)">Verify Challenge 1</button>
                 </li>
-                <li>
-                    <strong>Challenge 2:</strong>
-                    Simulate an asynchronous HTTP request.
+                <li><strong>Challenge 2:</strong><br>
+                    Simulate an asynchronous HTTP request.<br>
+                    Inside the HTTPRequest function, use setTimeout to simulate an asynchronous HTTP request that takes 2 seconds to complete.
                     <button id="challenge2Button" class="challenge-button" onclick="verifyChallenge(2)">Verify Challenge 2</button>
                 </li>
-                <li>
-                    <strong>Challenge 3:</strong>
-                    Resolve or reject the promise.
+                <li><strong>Challenge 3:</strong><br>
+                    Resolve or reject the promise.<br>
+                    Within HTTPrequest, it resolves the promise successfully in 80% of the cases and rejects it with an error in 20% of the cases.
                     <button id="challenge3Button" class="challenge-button" onclick="verifyChallenge(3)">Verify Challenge 3</button>
                 </li>
-                <li>
-                    <strong>Challenge 4:</strong>
-                    Manage the promise.
+                <li><strong>Challenge 4:</strong><br>
+                    Manage the promise.<br>
+                    It uses the then method to handle the success case of the promise and the catch method to handle any errors that may occur during its execution.
                     <button id="challenge4Button" class="challenge-button" onclick="verifyChallenge(4)">Verify Challenge 4</button>
                 </li>
             </ul>
@@ -121,35 +105,48 @@
     <script>
         function updateColor(minutes) {
             const timer = document.getElementById('timer');
-            timer.className = minutes >= 15 ? 'green' : minutes >= 5 ? 'yellow' : 'red';
-            timer.textContent = minutes > 0 ? `${Math.floor(minutes)}:${Math.floor((minutes * 60) % 60)}` : "00:00";
+            if (minutes >= 15 && minutes <= 30) {
+                timer.className = 'green';
+            } else if (minutes >= 5 && minutes < 15) {
+                timer.className = 'yellow';
+            } else if (minutes < 5) {
+                timer.className = 'red';
+            }
         }
 
         function startTimer() {
-            let totalMinutes = 30;
+            let totalSeconds = 30 * 60; // Total time for the timer in seconds
             function update() {
-                updateColor(totalMinutes);
-                if (totalMinutes > 0) {
-                    setTimeout(update, 60000);
-                    totalMinutes -= 1;
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+                document.getElementById('timer').innerText = pad(minutes) + ":" + pad(seconds);
+                updateColor(minutes);
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    setTimeout(update, 1000); // Update every second
                 }
             }
-            setTimeout(update, 60000);
+
+            function pad(val) {
+                return val < 10 ? "0" + val : val; // Add leading zero if necessary
+            }
+
+            update();
         }
 
         function verifyChallenge(challengeNumber) {
-            var button = document.getElementById('challenge' + challengeNumber + 'Button');
-            // Simulate an AJAX call to a server-side script
-            fetch(`http://localhost:3000/verify-challenge-${challengeNumber}`)
-                .then(response => response.text())
-                .then(text => {
-                    button.textContent = text;
-                    button.className = 'challenge-button ' + (text === 'success' ? 'success' : 'failure');
-                }).catch(error => {
-                    console.error('Error:', error);
-                    button.textContent = 'Error';
-                    button.className = 'challenge-button failure';
-                });
+            var buttonId = "challenge" + challengeNumber + "Button";
+            var button = document.getElementById(buttonId);
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    button.innerText = xhr.status === 200 ? "Success" : "Failure";
+                    button.classList.remove("success", "failure");
+                    button.classList.add(xhr.status === 200 ? "success" : "failure");
+                }
+            };
+            xhr.open("GET", `http://localhost:3000/verify-challenge-${challengeNumber}`, true);
+            xhr.send();
         }
 
         window.onload = startTimer;
